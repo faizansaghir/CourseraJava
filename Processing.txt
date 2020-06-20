@@ -1,0 +1,24 @@
+We use core jar file for Processing library
+
+reference:https://processing.org/reference/
+
+to create a PApplet we first extend PApplet class
+
+the PApplet class has methods 
+	setup(): run once for configuring the canvas 
+	draw(): loops over as required to draw the content of canvas
+
+we can use size() in setup to resize the canvas
+
+we can load image into memory using loadImage() which returns a PImage
+
+PImage can be resized using resize() in:
+draw() to make its resize dynamic
+setup() to make its resize static
+
+PApplet class has a variable height and width which store the value of height and width of canvas(dynamic)
+hence we can use PImageVar.resize(0,height) which means make image height = height of canvas and calculate width accordingly to keep ratio
+
+we use diffrent shape methods in draw() to draw shapes on canvas
+
+if we use fill() before drawing a shape in draw, then it draws the shape filled with the specified color in fill()
