@@ -1,6 +1,6 @@
 package miniProject;
 
-public class CovidData {
+public class CovidData implements Comparable<CovidData> {
 	private int day;
 	private	int month;
 	private int year;
@@ -53,6 +53,19 @@ public class CovidData {
 	public String toString() {
 		String ret="Date:"+getYear()+"-"+getMonth()+"-"+getDay()+"\nCases\\Deaths:"+getCases()+"\\"+getDeaths();
 		return(ret);
+	}
+	@Override
+	public int compareTo(CovidData o) {
+		if(this.getCases()>o.getCases()) {
+			return(-1);
+		}
+		else if(this.getCases()<o.getCases()){
+			return(1);
+		}
+		else {
+			return 0;
+		}
+		
 	}
 	
 }
