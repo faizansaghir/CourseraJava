@@ -1,10 +1,6 @@
 package miniProject;
 
 import processing.core.PApplet;
-import processing.core.PConstants;
-import processing.core.PFont;
-import processing.core.PGraphics;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import org.apache.commons.csv.*;
@@ -27,7 +24,6 @@ import de.fhpotsdam.unfolding.geo.Location;
 import de.fhpotsdam.unfolding.marker.SimplePointMarker;
 import de.fhpotsdam.unfolding.providers.Google;
 import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
-import de.fhpotsdam.unfolding.utils.MapUtils;
 
 public class CovidCases extends PApplet {
 
@@ -39,6 +35,7 @@ public class CovidCases extends PApplet {
 	private HashMap<String, SimplePointMarker> countries;
 	private HashMap<String, String> country;
 	private ArrayList<CovidData> covidData;
+	private ArrayList<CovidData> caseSortedCovidData;
 	private int uBtnX = 0;
 	private int uBtnY = 0;
 	private int uBtnW = 100;
@@ -86,8 +83,11 @@ public class CovidCases extends PApplet {
 		if(markerClicked) {
 			afterClickDraw();
 		}
+		else {
+			beforeClickDraw();
+		}
 	}
-
+	
 	private void afterClickDraw() {
 		fill(textColor);
 		int currPos=30;
@@ -101,12 +101,31 @@ public class CovidCases extends PApplet {
 		currPos+=20;
 		text("Total Deaths:"+totalDeaths,950,currPos);
 		currPos+=40;
-		String dayString="Latest Cases/Deaths Records";
+		String dayString="Latest Cases\\Deaths Records";
 		text(dayString,(float) (1050-dayString.length()*2.5),currPos);
 		currPos+=30;
 		for(CovidData currData:countryDataArray) {
 			text(currData.toString(),950,currPos);
 			currPos+=40;
+		}
+	}
+	
+	private void beforeClickDraw() {
+		fill(textColor);
+		int currPos=30;
+		String infoStr="INFORMATION";
+		text(infoStr,(float) (1050-infoStr.length()*2.5),0,300,currPos);
+		currPos+=20;
+		text("Major Highlights(Most Cases In A Day)",950,currPos);
+		currPos+=40;
+		int remaining=10;
+		for(CovidData currData:caseSortedCovidData) {
+			text("Country:"+currData.getCountry()+"\n"+currData.toString(),950,currPos);
+			currPos+=60;
+			remaining--;
+			if(remaining<=0) {
+				break;
+			}
 		}
 	}
 	
@@ -259,6 +278,8 @@ public class CovidCases extends PApplet {
 			if (isOnline) {
 				updateCovidDataFile();
 				getCovidDataFromFile();
+				caseSortedCovidData=new ArrayList<>(covidData);
+				Collections.sort(caseSortedCovidData);
 			} else {
 				System.out.println("You need internet connection to update data file.");
 			}
@@ -409,6 +430,8 @@ public class CovidCases extends PApplet {
 				System.exit(0);
 			}
 		}
+		caseSortedCovidData=new ArrayList<>(covidData);
+		Collections.sort(caseSortedCovidData);
 	}
 
 	private ArrayList<CovidData> getCovidDataForCountry(int days){
